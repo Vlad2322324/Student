@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Рассчитать средний балл</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="student">Выбрать студента:</label>
+      <select class="form-control" id="student" name="student">
+        {% for student in students %}
+          <option value="{{ student.id }}">{{ student.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="subject">Выбрать предмет:</label>
+      <select class="form-control" id="subject" name="subject">
+        <option value="all">Все предметы</option>
+        {% for subject in subjects %}
+          <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Посчитать</button>
+  </form>
+
+  {% if average_grade %}
+    <h2>Средний балл</h2>
+    <p>{{ average_grade }}</p>
+  {% endif %}
+{% endblock %}

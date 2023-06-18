@@ -14,7 +14,7 @@ def create_student(request):
     if request.method == 'POST':
         name = request.POST['name']
         student = Student.objects.create(name=name)
-        return redirect('student_list')  # Перенаправление на страницу списка студентов
+        return redirect('student_list')
     return render(request, 'create_student.html')
 
 
@@ -23,7 +23,7 @@ def create_subject(request):
     if request.method == 'POST':
         subject_name = request.POST['subject_name']
         subject = Subject.objects.create(subject_name=subject_name)
-        return redirect('subject_list')  # Перенаправление на страницу списка предметов
+        return redirect('subject_list')
     return render(request, 'create_subject.html')
 
 def create_grade(request):
@@ -135,13 +135,13 @@ def delete_grade(request, pk):
 
 
 def report(request):
-    # Получение всех оценок студентов
+
     all_grades = Grade.objects.all()
 
-    # Вычисление среднего балла для каждого студента
+
     student_grades = all_grades.values('student').annotate(avg_grade=Avg('grade'))
 
-    # Нахождение лучшего и худшего студентов
+
     best_student = student_grades.order_by('-avg_grade').first()
     worst_student = student_grades.order_by('avg_grade').first()
 
@@ -154,7 +154,6 @@ def report(request):
         best_student_name = "N/A"
         best_student_avg_grade = None
 
-    # Получение деталей о худшем студенте
     if worst_student:
         worst_student_id = worst_student['student']
         worst_student_name = Grade.objects.filter(student=worst_student_id).first().student.name
@@ -185,6 +184,36 @@ def grade_list(request):
     grades = Grade.objects.all()
     context = {'grades': grades}
     return render(request, 'grade_list.html', context)
+
+def average_report(request):
+    if request.method == 'POST':
+        student_id = request.POST.get('student')
+        subject_id = request.POST.get('subject')
+
+        if subject_id == 'all':
+            grades = Grade.objects.filter(student_id=student_id)
+        else:
+            grades = Grade.objects.filter(student_id=student_id, subject_id=subject_id)
+
+        total_grades = len(grades)
+        if total_grades > 0:
+            sum_grades = sum(grade.grade for grade in grades)
+            average_grade = sum_grades / total_grades
+        else:
+            average_grade = 0
+
+        context = {
+            'average_grade': average_grade,
+            'students': Student.objects.all(),
+            'subjects': Subject.objects.all()
+        }
+        return render(request, 'average_report.html', context)
+
+    context = {
+        'students': Student.objects.all(),
+        'subjects': Subject.objects.all()
+    }
+    return render(request, 'average_report.html', context)
 
 
 
