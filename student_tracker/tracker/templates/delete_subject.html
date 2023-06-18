@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Delete Subject</h2>
-  <p>Are you sure you want to delete the subject '{{ subject.subject_name }}'?</p>
+  <h2>Удалить предмет</h2>
+  <p>>Вы точно хотите удалить предмет'{{ subject.subject_name }}'?</p>
   <form method="post">
     {% csrf_token %}
-    <button type="submit">Delete</button>
-    <a href="{% url 'subject_list' %}">Cancel</a>
+    <button type="submit">Удалить</button>
+    <a href="{% url 'subject_list' %}">Отменить</a>
   </form>
 {% endblock %}

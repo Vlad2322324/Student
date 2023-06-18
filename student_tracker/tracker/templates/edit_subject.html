@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Edit Subject</h2>
+  <h2>Редактировать предмет</h2>
   <form method="post">
     {% csrf_token %}
-    <label for="subject_name">Subject Name:</label>
+    <label for="subject_name">Предмет:</label>
     <input type="text" id="subject_name" name="subject_name" value="{{ subject.subject_name }}"><br>
 
-    <label for="professor">Professor:</label>
+    <label for="professor">Преподаватель:</label>
     <input type="text" id="professor" name="professor" value="{{ subject.professor }}"><br>
 
-    <button type="submit">Save</button>
-    <a href="{% url 'subject_list' %}">Cancel</a>
+    <button type="submit">Сохранить</button>
+    <a href="{% url 'subject_list' %}">Отменить</a>
   </form>
 {% endblock %}

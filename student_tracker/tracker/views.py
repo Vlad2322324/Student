@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Student, Grade, Subject
-from django.db.models import Avg
+from django.db.models import Avg, Min, Max
 from django.shortcuts import render
 
 
@@ -26,6 +26,26 @@ def create_subject(request):
         return redirect('subject_list')  # Перенаправление на страницу списка предметов
     return render(request, 'create_subject.html')
 
+def create_grade(request):
+    if request.method == 'POST':
+        grade_value = request.POST['grade']
+        date = request.POST['date']
+        subject_id = request.POST['subject']
+        student_id = request.POST['student']
+
+        grade = Grade.objects.create(
+            grade=grade_value,
+            date=date,
+            subject_id=subject_id,
+            student_id=student_id
+        )
+        return redirect('grade_list')
+
+    subjects = Subject.objects.all()
+    students = Student.objects.all()
+
+    context = {'subjects': subjects, 'students': students}
+    return render(request, 'create_grade.html', context)
 
 def edit_student(request, pk):
     student = Student.objects.get(pk=pk)
@@ -59,6 +79,33 @@ def edit_subject(request, pk):
     context = {'subject': subject}
     return render(request, 'edit_subject.html', context)
 
+def edit_grade(request, pk):
+    grade = Grade.objects.get(pk=pk)
+    subjects = Subject.objects.all()
+    students = Student.objects.all()
+
+    if request.method == 'POST':
+        grade_value = request.POST['grade']
+        date = request.POST['date']
+        subject_id = request.POST['subject']
+        student_id = request.POST['student']
+
+        grade.grade = grade_value
+        grade.date = date
+        grade.subject_id = subject_id
+        grade.student_id = student_id
+        grade.save()
+
+        return redirect('grade_list')
+
+    context = {
+        'grade': grade,
+        'subjects': subjects,
+        'students': students
+    }
+    return render(request, 'edit_grade.html', context)
+
+
 def delete_student(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == 'POST':
@@ -76,21 +123,52 @@ def delete_subject(request, pk):
     context = {'subject': subject}
     return render(request, 'delete_subject.html', context)
 
+def delete_grade(request, pk):
+    grade = get_object_or_404(Grade, pk=pk)
+
+    if request.method == 'POST':
+        grade.delete()
+        return redirect('grade_list')
+
+    context = {'grade': grade}
+    return render(request, 'delete_grade.html', context)
+
 
 def report(request):
-    # Расчет средних баллов по дисциплинам
-    subject_averages = Grade.objects.values('subject__name').annotate(average_grade=Avg('grade'))
+    # Получение всех оценок студентов
+    all_grades = Grade.objects.all()
 
-    # Получение лучшего и худшего студента
-    best_student = Student.objects.annotate(average_grade=Avg('grade__grade')).order_by('-average_grade').first()
-    worst_student = Student.objects.annotate(average_grade=Avg('grade__grade')).order_by('average_grade').first()
+    # Вычисление среднего балла для каждого студента
+    student_grades = all_grades.values('student').annotate(avg_grade=Avg('grade'))
+
+    # Нахождение лучшего и худшего студентов
+    best_student = student_grades.order_by('-avg_grade').first()
+    worst_student = student_grades.order_by('avg_grade').first()
+
+    # Получение деталей о лучшем студенте
+    if best_student:
+        best_student_id = best_student['student']
+        best_student_name = Grade.objects.filter(student=best_student_id).first().student.name
+        best_student_avg_grade = best_student['avg_grade']
+    else:
+        best_student_name = "N/A"
+        best_student_avg_grade = None
+
+    # Получение деталей о худшем студенте
+    if worst_student:
+        worst_student_id = worst_student['student']
+        worst_student_name = Grade.objects.filter(student=worst_student_id).first().student.name
+        worst_student_avg_grade = worst_student['avg_grade']
+    else:
+        worst_student_name = "N/A"
+        worst_student_avg_grade = None
 
     context = {
-        'subject_averages': subject_averages,
-        'best_student': best_student,
-        'worst_student': worst_student
+        'best_student_name': best_student_name,
+        'best_student_avg_grade': best_student_avg_grade,
+        'worst_student_name': worst_student_name,
+        'worst_student_avg_grade': worst_student_avg_grade
     }
-
 
     return render(request, 'report.html', context)
 
@@ -102,6 +180,12 @@ def subject_list(request):
     subjects = Subject.objects.all()
     context = {'subjects': subjects}
     return render(request, 'subject_list.html', context)
+
+def grade_list(request):
+    grades = Grade.objects.all()
+    context = {'grades': grades}
+    return render(request, 'grade_list.html', context)
+
 
 
 

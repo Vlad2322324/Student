@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Изменить оценку</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="grade">Оценка:</label>
+    <input type="text" id="grade" name="grade" value="{{ grade.grade }}"><br>
+
+    <label for="date">Дата:</label>
+    <input type="date" id="date" name="date" value="{{ grade.date }}"><br>
+
+    <label for="subject">Предмет:</label>
+    <select id="subject" name="subject">
+      {% for subject in subjects %}
+        <option value="{{ subject.id }}" {% if subject.id == grade.subject.id %}selected{% endif %}>{{ subject.name }}</option>
+      {% endfor %}
+    </select><br>
+
+    <label for="student">Студент:</label>
+    <select id="student" name="student">
+      {% for student in students %}
+        <option value="{{ student.id }}" {% if student.id == grade.student.id %}selected{% endif %}>{{ student.name }}</option>
+      {% endfor %}
+    </select><br>
+
+    <button type="submit">Сохранить</button>
+    <a href="{% url 'grade_list' %}">Отменить</a>
+  </form>
+{% endblock %}

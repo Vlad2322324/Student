@@ -2,14 +2,16 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Student Tracker</title>
+    <title>Система учета успеваемости студентов</title>
 </head>
 <body>
     <nav>
         <ul>
             <li><a href="{% url 'student_list' %}">Предметы</a></li>
             <li><a href="{% url 'subject_list' %}">Студенты</a></li>
-            <li><a href="{% url 'report' %}">Report</a></li>
+            <li><a href="{% url 'grade_list' %}">Оценки</a></li>
+            <li><a href="{% url 'report' %}">Отчет</a></li>
+
         </ul>
     </nav>
 

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1>Список оценок</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Оценка</th>
+        <th>Дата</th>
+        <th>Предмет</th>
+        <th>Студент</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for grade in grades %}
+        <tr>
+          <td>{{ grade.id }}</td>
+          <td>{{ grade.grade }}</td>
+          <td>{{ grade.date }}</td>
+          <td>{{ grade.subject.subject_name }}</td>
+          <td>{{ grade.student.name }}</td>
+          <td>
+            <a href="{% url 'edit_grade' grade.id %}">Изменить</a>
+            <a href="{% url 'delete_grade' grade.id %}">Удалить</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="6">Пусто.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<a href="{% url 'create_grade' %}">Добавить оценку</a>
+{% endblock %}

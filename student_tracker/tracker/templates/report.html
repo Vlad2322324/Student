@@ -1,28 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Report</h2>
+  <h1>Отчет об успеваемости студентов</h1>
 
-  <h3>Subject Averages:</h3>
-  <ul>
-    {% for subject_average in subject_averages %}
-      <li>{{ subject_average.subject__name }}: {{ subject_average.average_grade }}</li>
-    {% endfor %}
-  </ul>
-
-  <h3>Best Student:</h3>
-  {% if best_student %}
-    <p>Name: {{ best_student.name }}</p>
-    <p>Average Grade: {{ best_student.average_grade }}</p>
+  <h2>Лучший студент</h2>
+  {% if best_student_name %}
+    <p>Имя: {{ best_student_name }}</p>
+    <p>Средний балл: {{ best_student_avg_grade }}</p>
   {% else %}
-    <p>No best student found.</p>
+    <p>No data available.</p>
   {% endif %}
 
-  <h3>Worst Student:</h3>
-  {% if worst_student %}
-    <p>Name: {{ worst_student.name }}</p>
-    <p>Average Grade: {{ worst_student.average_grade }}</p>
+  <h2>Худший студент</h2>
+  {% if worst_student_name %}
+    <p>Имя: {{ worst_student_name }}</p>
+    <p>Средний балл: {{ worst_student_avg_grade }}</p>
   {% else %}
-    <p>No worst student found.</p>
+    <p>No data available.</p>
   {% endif %}
 {% endblock %}

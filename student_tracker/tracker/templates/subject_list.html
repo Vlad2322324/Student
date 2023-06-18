@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Subject List</h1>
+  <h1>Список предметов</h1>
 
   <table>
     <thead>
       <tr>
         <th>ID</th>
-        <th>Name</th>
-        <th>Professor</th>
+        <th>Имя</th>
+        <th>Преподаватель</th>
       </tr>
     </thead>
     <tbody>
@@ -18,17 +18,17 @@
           <td>{{ subject.subject_name }}</td>  <!-- Изменено на subject_name -->
           <td>{{ subject.professor }}</td>
           <td>
-            <a href="{% url 'edit_subject' subject.id %}">Edit</a>
-            <a href="{% url 'delete_subject' subject.id %}">Delete</a>
+            <a href="{% url 'edit_subject' subject.id %}">Изменить</a>
+            <a href="{% url 'delete_subject' subject.id %}">Удалить</a>
           </td>
         </tr>
       {% empty %}
         <tr>
-          <td colspan="3">No subjects found.</td>
+          <td colspan="3">Пусто.</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
   
-  <a href="{% url 'create_subject' %}">Create New Subject</a>
+  <a href="{% url 'create_subject' %}">Добавить предмет</a>
 {% endblock %}
