@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Report</h2>
+
+  <h3>Subject Averages:</h3>
+  <ul>
+    {% for subject_average in subject_averages %}
+      <li>{{ subject_average.subject__name }}: {{ subject_average.average_grade }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Best Student:</h3>
+  {% if best_student %}
+    <p>Name: {{ best_student.name }}</p>
+    <p>Average Grade: {{ best_student.average_grade }}</p>
+  {% else %}
+    <p>No best student found.</p>
+  {% endif %}
+
+  <h3>Worst Student:</h3>
+  {% if worst_student %}
+    <p>Name: {{ worst_student.name }}</p>
+    <p>Average Grade: {{ worst_student.average_grade }}</p>
+  {% else %}
+    <p>No worst student found.</p>
+  {% endif %}
+{% endblock %}
